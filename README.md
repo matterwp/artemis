@@ -2,28 +2,63 @@
 
 [![GitHub release](https://img.shields.io/github/v/release/pressxco/flex?color=ed64a6)](https://github.com/pressxco/flex/releases) [![license](https://img.shields.io/badge/license-GPL--2.0%2B-orange)](https://github.com/pressxco/flex/blob/master/LICENSE) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/pressxco/flex/pulls)
 
-Artemis is a modern WordPress starter theme that includes a complete development environment with Sass, PostCSS, Autoprefixer, stylelint, Webpack, ESLint, imagemin, Browsersync, and more.
+Artemis is a modern WordPress starter theme built with a focus on performance, security, and developer experience. It includes a complete development environment with Sass, PostCSS, Autoprefixer, stylelint, Webpack, ESLint, imagemin, Browsersync, and more.
+
+## Features
+
+- 🚀 Modern PHP architecture with PSR-4 autoloading
+- 🎨 TailwindCSS integration for utility-first styling
+- 📦 Laravel Mix for asset compilation and bundling
+- 🔒 Built-in security enhancements
+- ⚡ Performance optimizations out of the box
+- 🧩 Gutenberg blocks support
+- 🎯 Carbon Fields integration for custom fields
+- 🔄 BrowserSync for live reload during development
+- 📱 Mobile-first, responsive approach
+- 🛠️ Modern development tools and standards
 
 ## Requirements
 
 - PHP 7.4.30 or higher
 - WordPress 5.7.2 or higher
-- Node.js & NPM
-- Composer
+- Node.js 14+ & NPM
+- Composer 2+
 
 ## Getting Started
 
-### 1. Install Dependencies
+### 1. Installation
 
 ```bash
+# Clone the repository
+git clone https://github.com/wparray/artemis.git
+
+# Install PHP dependencies
 composer install
+
+# Install Node dependencies
 yarn install
 ```
 
-### 2. Start Development Environment
+### 2. Configuration
+
+1. Update your local development URL in `.dev/webpack.mix.js`
+2. Configure theme settings in `src/Core/Bootstrap.php`
+3. Set up environment-specific settings if needed
+
+### 3. Development
 
 ```bash
+# Start development server with hot reload
 yarn dev
+
+# Build for production
+yarn build:production
+
+# Run WordPress coding standards check
+composer test
+
+# Fix coding standards automatically
+composer fix
 ```
 
 ## Project Structure
@@ -31,10 +66,18 @@ yarn dev
 ```
 artemis/
 ├── .dev/                  # Development configuration files
-├── build/                 # Compiled assets (generated)
+│   └── webpack.mix.js     # Laravel Mix configuration
 ├── src/
 │   ├── Core/             # Core framework classes
+│   │   ├── Bootstrap.php # Main theme initialization
+│   │   ├── Config.php    # Configuration utilities
+│   │   ├── Support.php   # Theme support features
+│   │   └── Templates.php # Template handling
 │   ├── Setup/            # Theme setup and configuration
+│   │   ├── Assets.php    # Asset management
+│   │   ├── Fields.php    # Carbon Fields setup
+│   │   ├── Menus.php     # Navigation menus
+│   │   └── Widgets.php   # Widget areas
 │   ├── Theme/
 │   │   ├── Blocks/       # Gutenberg blocks
 │   │   ├── Layouts/      # Layout templates
@@ -42,198 +85,123 @@ artemis/
 │   │   ├── Page/         # Page templates
 │   │   └── Post/         # Post templates
 │   └── Utils/            # Utility classes
-└── vendor/               # Composer dependencies
+│       ├── Helpers.php   # Helper functions
+│       ├── Performance.php # Performance optimizations
+│       └── Security.php  # Security enhancements
+├── functions.php         # Theme functions
+└── style.css            # Theme metadata
 ```
 
-## Configuration
+## Core Components
 
-### Theme Configuration
+### Bootstrap System
 
-The theme configuration is handled through the Bootstrap class. Reference:
+The Bootstrap class (`src/Core/Bootstrap.php`) is the heart of the theme, handling:
+
+- Theme configuration
+- Service container management
+- Feature registration
+- Asset loading
 
 ```php
+// Example configuration
 public static $config = [
     'name' => 'Artemis Starter Theme',
     'version' => 'v1.0.0',
     'text_domain' => 'artemis',
     'jquery' => false,
     'custom_fields' => false,
-    'icon_dir' => '/build/icons/',
-    'image_dir' => '/build/images/'
 ];
 ```
 
-### Development Configuration
+### Helper Functions
 
-Webpack configuration can be modified in `.dev/webpack.mix.js`:
-
-```javascript
-mix
-    .browserSync({
-        proxy: 'http://artemis.local',
-        open: 'external',
-        port: 3000,
-        files: ['*.php', 'src/**/**/*'],
-        reloadDelay: 500
-    });
-```
-
-## Core Features
-
-### 1. Registrable Interface
-
-All service classes implement the Registrable interface, ensuring consistent registration of components:
+The Utils class provides various helper functions for common tasks:
 
 ```php
-interface Registrable {
-    public function register();
-}
-```
+// Template components
+Kit::component('header/header');
+Kit::component('footer/footer', ['data' => $value]);
 
-### 2. Performance Optimizations
-
-The Performance class handles various WordPress optimizations:
-
-```php
-// ----------------------------------------------------
-// Cleanup Header.
-// ----------------------------------------------------
-\remove_action( 'wp_head', 'rsd_link' );
-\remove_action( 'wp_head', 'wlwmanifest_link' );
-\remove_action( 'wp_head', 'wp_generator' );
-\remove_action( 'wp_head', 'rest_output_link_wp_head', 10 );
-\remove_action( 'wp_head', 'wp_oembed_add_discovery_links', 10 );
-\remove_action( 'wp_head', 'feed_links_extra', 3 );
-\remove_action( 'wp_head', 'feed_links', 2 );
-```
-
-### 3. Security Enhancements
-
-Security features are managed through the Security class:
-
-```php
-/**
- * Disable WLWManifest Link
- *
- * @since 1.0.5
- * @return void
- * -----------------------------------------------------------------------------
- * -----------------------------------------------------------------------------
- */
-public function disable_wlw_manifest_link() {
-    \remove_action( 'wp_head', 'wlwmanifest_link' );
-}
-
-/**
- * Disable Shortlink
- *
- * @since 1.0.5
- * @return void
- * -----------------------------------------------------------------------------
- * -----------------------------------------------------------------------------
- */
-public function disable_shortlink() {
-    \remove_action( 'wp_head', 'wp_shortlink_wp_head' );
-    \remove_action( 'template_redirect', 'wp_shortlink_header', 11, 0 );
-}
-```
-
-## Theme Components
-
-### 1. Layouts
-
-Layouts are managed through the `Kit::layout()` helper function. Example usage:
-
-```php
+// Layouts
 Kit::layout('default', function() {
-    // Your content here
+    // Content here
 });
-```
 
-### 2. Components
-
-Components can be included using the `Kit::component()` helper:
-
-```php
-Kit::component('header/head');
-// With parameters
-Kit::component('footer/footer', ['variable' => 'value']);
-```
-
-### 3. Assets
-
-Assets (icons and images) can be included using helper functions:
-
-```php
-// SVG icons
-Kit::icon('logo', 'inline');  // Inline SVG
-Kit::icon('logo', 'tag');     // <img> tag
-
-// Images
+// Assets
+Kit::icon('logo', 'inline');
 Kit::image('header.jpg');
 ```
 
-## Development
+### Security Features
 
-### Asset Compilation
+Built-in security enhancements include:
 
-The theme uses Laravel Mix for asset compilation. Main configuration:
+- XML-RPC disabled by default
+- WordPress version number hidden
+- Unnecessary header links removed
+- REST API endpoints protection
+- Feed links disabled
+- Heartbeat API optimization
 
-```javascript
-.sass(
-    'src/Theme/Main/Static/styles/main.scss',
-    'styles.bundle.css',
-    { sassOptions: { outputStyle: 'compressed' } }
-)
-.options({
-    postCss: [
-        require('css-declaration-sorter')({
-            order: 'smacss'
-        })
-    ],
-    autoprefixer: {
-        options: {
-            browsers: [
-                'last 6 versions',
-            ]
-        }
-    },
-});
+### Performance Optimizations
+
+Automatic performance improvements:
+
+- Emoji script removal
+- Optimized heartbeat API
+- Cleaned up WordPress header
+- Efficient asset loading
+- Minified and combined assets
+
+## Development Tools
+
+### Laravel Mix Configuration
+
+The theme uses Laravel Mix for asset compilation. Main features:
+
+- SASS/SCSS compilation
+- PostCSS processing
+- JavaScript bundling
+- Image optimization
+- BrowserSync integration
+
+### Coding Standards
+
+The theme follows WordPress Coding Standards, enforced through:
+
+- PHP_CodeSniffer
+- ESLint
+- Stylelint
+- Prettier
+
+Run checks using:
+```bash
+composer test    # Check coding standards
+composer fix     # Auto-fix coding standards
 ```
 
-### Tailwind CSS
+### Asset Management
 
-Tailwind CSS is configured in `.dev/tailwind.config.js`:
+Assets are managed through the Assets class (`src/Setup/Assets.php`):
 
-```javascript
-module.exports = {
-    content: [
-        './src/**/*.{svg,css,png,jpg,js}',
-        './src/**/*.php',
-        './src/**/**/*.php',
-    ],
-    plugins: [
-        require('@tailwindcss/typography')
-    ]
-}
-```
-
-## Available Scripts
-
-- `yarn dev`: Start development environment with hot reloading
-- `yarn build`: Build assets for development
-- `yarn build:production`: Build assets for production
-- `composer test`: Run PHP CodeSniffer tests
-- `composer fix`: Auto-fix PHP coding standards
+- Automatic versioning
+- Conditional loading
+- Dependencies management
+- Footer/Header placement control
 
 ## Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
 ## License
 
-This project is licensed under the GPL-2.0+ License.
+This project is licensed under the GPL-2.0+ License - see the [LICENSE](LICENSE) file for details.
 
----
+## Credits
 
 Brought to you by [MatterWP](https://matterwp.com).
