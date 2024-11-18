@@ -1,6 +1,6 @@
 # Artemis WordPress Starter Theme
 
-[![GitHub release](https://img.shields.io/github/v/release/pressxco/flex?color=ed64a6)](https://github.com/pressxco/flex/releases) [![license](https://img.shields.io/badge/license-GPL--2.0%2B-orange)](https://github.com/pressxco/flex/blob/master/LICENSE) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/pressxco/flex/pulls)
+[![GitHub release](https://img.shields.io/github/v/release/matterwp/artemis?color=ed64a6)](https://github.com/matterwp/artemis/releases) [![license](https://img.shields.io/badge/license-GPL--2.0%2B-orange)](https://github.com/matterwp/artemis/blob/master/LICENSE) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/matterwp/artemis/pulls)
 
 Artemis is a modern WordPress starter theme built with a focus on performance, security, and developer experience. It includes a complete development environment with Sass, PostCSS, Autoprefixer, stylelint, Webpack, ESLint, imagemin, Browsersync, and more.
 
